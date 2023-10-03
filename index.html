@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>灵韵</title>
+
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Quicksand:300,700&amp;display=swap"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="icon" href="./favicon.ico" type="image/x-icon" />
+  </head>
+  <body style="-webkit-app-region: drag">
+    <header style="-webkit-app-region: drag">
+      <section style="-webkit-app-region: no-drag">
+        <!--html代码-->
+      </section>
+      <section>
+        <!--html代码-->
+      </section>
+      <section style="-webkit-app-region: no-drag">
+        <!--html代码-->
+      </section>
+    </header>
+    <div class="o-background">
+      <div class="volume" id="volume_module">
+        <img src="./img/audio_volume_medium.png" alt="" id="volume_img" />
+        <div class="innerbox" id="innerbox"></div>
+      </div>
+      <div class="c-player">
+        <div class="c-player__picture">
+          <div class="c-player__picture__images">
+            <img src="img/2.jpg" id="img" />
+            <img src="img/1.jpg" id="img1" />
+          </div>
+        </div>
+
+        <div class="c-player__details">
+          <strong id="singer">Sugar</strong>
+          <span id="songname">Rakata (Offical Single)</span>
+        </div>
+
+        <div class="c-player__ui">
+          <div class="c-player__ui__prev" id="prevsong">
+            <svg class="icon" viewBox="0 0 232.153 232.153">
+              <use class="play" xlink:href="#play" x="0" y="0" />
+            </svg>
+            <svg class="icon" viewBox="0 0 232.153 232.153">
+              <use class="play" xlink:href="#play" x="0" y="0" />
+            </svg>
+          </div>
+
+          <div class="o-controls">
+            <div class="c-player__ui__play" id="playsong">
+              <svg class="icon" viewBox="0 0 232.153 232.153">
+                <use class="play" xlink:href="#play" x="0" y="0" />
+              </svg>
+            </div>
+
+            <div class="c-player__ui__pause" id="pausesong">
+              <svg class="icon" viewBox="0 0 14 36">
+                <use class="pause" xlink:href="#pause" x="0" y="0" />
+              </svg>
+              <svg class="icon" viewBox="0 0 14 36">
+                <use class="pause" xlink:href="#pause" x="0" y="0" />
+              </svg>
+            </div>
+          </div>
+
+          <div class="c-player__ui__next" id="nextsong">
+            <svg class="icon" viewBox="0 0 232.153 232.153">
+              <use class="play" xlink:href="#play" x="0" y="0" />
+            </svg>
+            <svg class="icon" viewBox="0 0 232.153 232.153">
+              <use class="play" xlink:href="#play" x="0" y="0" />
+            </svg>
+          </div>
+
+          <div class="c-player__ui__seek">
+            <div class="c-player__ui__seek__seeker">
+              <div></div>
+            </div>
+          </div>
+
+          <div class="c-player__ui__dots">
+            <div class="c-player__ui__dots__dot"></div>
+            <div class="c-player__ui__dots__dot"></div>
+            <div class="c-player__ui__dots__dot"></div>
+            <div class="c-player__ui__dots__dot"></div>
+          </div>
+        </div>
+      </div>
+
+      <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+        <defs>
+          <filter id="goo">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
+            <feColorMatrix
+              in="blur"
+              mode="matrix"
+              values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -9"
+              result="goo"
+            />
+            <feBlend in="SourceGraphic" in2="goo" />
+          </filter>
+        </defs>
+        <symbol id="play">
+          <path
+            style="fill-rule: evenodd; clip-rule: evenodd"
+            d="M203.791,99.628L49.307,2.294c-4.567-2.719-10.238-2.266-14.521-2.266   c-17.132,0-17.056,13.227-17.056,16.578v198.94c0,2.833-0.075,16.579,17.056,16.579c4.283,0,9.955,0.451,14.521-2.267   l154.483-97.333c12.68-7.545,10.489-16.449,10.489-16.449S216.471,107.172,203.791,99.628z"
+          />
+        </symbol>
+        <symbol id="pause">
+          <rect x="0" width="13" height="36" rx="2"></rect>
+        </symbol>
+      </svg>
+    </div>
+
+    <audio id="audio"></audio>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="js/TweenMax.min.js"></script>
+    <script src="js/musicList.js"></script>
+    <script src="js/script.js"></script>
+    <script type="text/javascript" src="jquery/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+      //延时函数
+      var sleep = function (time) {
+        var startTime = new Date().getTime() + parseInt(time, 10)
+        while (new Date().getTime() < startTime) {}
+      }
+      //音量模块
+      var volume = 0.5
+      function volumeboxinit() {
+        $('#volume_module').show()
+        document.getElementById('volume_module').style.visibility = 'visible'
+        if (volume < 0.1)
+          document.getElementById('volume_img').src =
+            './img/audio_volume_mute.png'
+        else
+          document.getElementById('volume_img').src =
+            './img/audio_volume_medium.png'
+        var v = 200 - volume * 200
+        v = Math.ceil(v)
+        console.log(v)
+        document.getElementById('innerbox').style.height = v + 'px'
+        $('#volume_module').delay(3000).hide(0)
+      }
+      function audioup() {
+        if (volume < 1) {
+          volume += 0.1
+          volume = Math.round(volume * 10) / 10
+          if (volume == 0) volume = 0.1
+          document.getElementById('audio').volume = volume
+          // console.log(document.getElementById('audio').volume)
+        }
+        volumeboxinit()
+      }
+      function audiodown() {
+        if (volume > 0) {
+          volume -= 0.1
+          volume = Math.round(volume * 10) / 10
+          // if (volume < 0) volume = 0
+          document.getElementById('audio').volume = volume
+          // console.log(document.getElementById('audio').volume)
+        }
+        volumeboxinit()
+      }
+      //音量按键监听
+      $(document).keyup(function (event) {
+        if (event.ctrlKey && event.keyCode == 38) {
+          audioup()
+        }
+      })
+      $(document).keyup(function (event) {
+        if (event.ctrlKey && event.keyCode == 40) {
+          audiodown()
+        }
+      })
+      //下一曲监听
+      $(document).keyup(function (event) {
+        if (event.ctrlKey && event.keyCode == 39) {
+          var btn = document.getElementById('nextsong')
+          btn.click()
+        }
+      })
+      //上一曲监听
+      $(document).keyup(function (event) {
+        if (event.ctrlKey && event.keyCode == 37) {
+          var btn = document.getElementById('prevsong')
+          btn.click()
+        }
+      })
+      //播放监听
+      $(document).keyup(function (event) {
+        var isplay = 0
+        var audioPlayer = document.querySelector('audio')
+        if (audioPlayer.paused) {
+          isplay = 0
+        } else {
+          // 播放中
+          isplay = 1
+        }
+        if (event.ctrlKey && event.keyCode == 101 && isplay == 0) {
+          var btn = document.getElementById('playsong')
+          btn.click()
+        } else if (event.ctrlKey && event.keyCode == 101 && isplay == 1) {
+          var btn = document.getElementById('pausesong')
+          btn.click()
+        }
+      })
+      //专辑图片获取
+      $(document).ready(function () {
+        songname = musicList[musicnum]
+          .split('-')[1]
+          .replace('.mp3', '')
+          .split('[')[0]
+        singer = musicList[musicnum].split('-')[0]
+        $.ajax({
+          type: 'get',
+          url: 'https://mark.abdwhp.cn/album.php',
+          contentType: 'application/x-www-form-urlencoded',
+          data: { name: singer + songname },
+          // dataType: 'json',
+          success: function (data) {
+            var imgurl = data.split('{')
+            imgurl = imgurl[0]
+            if (imgurl == '') imgurl = './img/1.jpg'
+            $('#img').attr('src', imgurl)
+            $('#img1').attr('src', imgurl)
+          },
+        })
+        $('.c-player__ui__play').click(function () {
+          songname = musicList[musicnum]
+            .split('-')[1]
+            .replace('.mp3', '')
+            .split('[')[0]
+          singer = musicList[musicnum].split('-')[0]
+          $.ajax({
+            type: 'get',
+            url: 'https://mark.abdwhp.cn/album.php',
+            contentType: 'application/x-www-form-urlencoded',
+            data: { name: singer + songname },
+            // dataType: 'json',
+            success: function (data) {
+              var imgurl = data.split('{')
+              imgurl = imgurl[0]
+              if (imgurl == '') imgurl = './img/1.jpg'
+              $('#img').attr('src', imgurl)
+              $('#img1').attr('src', imgurl)
+            },
+          })
+        })
+        $('.c-player__ui__next').click(function () {
+          songname = musicList[musicnum]
+            .split('-')[1]
+            .replace('.mp3', '')
+            .split('[')[0]
+          singer = musicList[musicnum].split('-')[0]
+          $.ajax({
+            type: 'get',
+            url: 'https://mark.abdwhp.cn/album.php',
+            contentType: 'application/x-www-form-urlencoded',
+            data: { name: singer + songname },
+            // dataType: 'json',
+            success: function (data) {
+              var imgurl = data.split('{')
+              imgurl = imgurl[0]
+              if (imgurl == '') imgurl = './img/1.jpg'
+              $('#img').attr('src', imgurl)
+              $('#img1').attr('src', imgurl)
+            },
+          })
+        })
+        $('.c-player__ui__prev').click(function () {
+          songname = musicList[musicnum]
+            .split('-')[1]
+            .replace('.mp3', '')
+            .split('[')[0]
+          singer = musicList[musicnum].split('-')[0]
+          $.ajax({
+            type: 'get',
+            url: 'https://mark.abdwhp.cn/album.php',
+            contentType: 'application/x-www-form-urlencoded',
+            data: { name: singer + songname },
+            // dataType: 'json',
+            success: function (data) {
+              var imgurl = data.split('{')
+              imgurl = imgurl[0]
+              if (imgurl == '') imgurl = './img/1.jpg'
+              $('#img').attr('src', imgurl)
+              $('#img1').attr('src', imgurl)
+            },
+          })
+        })
+      })
+    </script>
+  </body>
+</html>
